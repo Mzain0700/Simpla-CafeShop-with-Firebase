@@ -16,4 +16,4 @@
 
 #### Note : This Code only provide a basic example of how Firebase works It does not provide a proper website.
 
-![Employee data](https://github.com/Mzain0700/Simpla-CafeShop-with-Firebase/blob/main/CloudCafe.png "Cloud Cafe")
+![Cloud Cafe](https://github.com/Mzain0700/Simpla-CafeShop-with-Firebase/blob/main/CloudCafe.png "Cloud Cafe")
