@@ -1,0 +1,203 @@
+body {
+    background: #000000;
+    font-family: ubuntu, sans-serif;
+}
+
+h1 {
+    color: #fff;
+    font-size: 64px;
+    letter-spacing: 2px;
+    margin-top: 80px;
+    text-align: center;
+}
+
+.content {
+    background: #fff;
+    max-width: 960px;
+    margin: 30px auto;
+    padding: 20px 30px;
+    border-radius: 10px 120px 10px 10px;
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 20px;
+    background: #f6f6f6;
+    font-size: 20px;
+    color: #555;
+    position: relative;
+    border-bottom: 1px solid #e6e6e6;
+    height: 100px;
+}
+
+li:nth-child(even) {
+    padding: 20px;
+    background: #f2f2f2;
+}
+
+li span {
+    display: block;
+}
+
+li span:nth-child(2) {
+    font-size: 16px;
+    margin-top: 6px;
+    color: #999;
+}
+
+li div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.6);
+    width: 40px;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+form input {
+    width: 48%;
+    margin: 0 1%;
+    padding: 10px;
+    display: block;
+    box-sizing: border-box;
+    font-size: 18px;
+    border: 0;
+    border-bottom: 1px solid #eee;
+}
+
+form input:focus {
+    outline: none;
+    border-bottom: 3px solid #88236f;
+    padding-bottom: 8px;
+    transition: all ease 0.2s;
+}
+
+form:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+
+button {
+    border: 0;
+    background: #fff;
+    border-radius: 10px;
+    padding: 13px;
+    width: 14%;
+    box-shadow: -1px 0px 1px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    font-family: ubuntu, sans-serif;
+    letter-spacing: 1px;
+    color: #999;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+
+
+
+
+
+
+#update-cafe-form {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 30px;
+    padding: 20px 30px;
+    border-radius: 10px;
+    background: #f8f8f8;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#update-cafe-form input {
+    margin: 0 0 10px 0;
+}
+
+#update-cafe-form button {
+    width: 16%;
+    background: #88236f;
+    color: #fff;
+    transition: background 0.2s;
+    align-self: flex-end;
+}
+
+#update-cafe-form button:hover {
+    background: #b93b7a;
+}
+
+#update-cafe-form input:focus {
+    border-bottom: 3px solid #88236f;
+    padding-bottom: 8px;
+    transition: all ease 0.2s;
+}
+
+/* Add responsive design for smaller screens */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 36px;
+    }
+
+    .content {
+        width: 90%;
+        padding: 15px;
+    }
+
+    form input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #update-cafe-form button {
+        width: 100%; /* Full width button on small screens */
+        align-self: stretch; /* Make it stretch across the form */
+    }
+}
+
+/* Stylize Add Cafe button inside the form */
+#add-cafe-form button {
+    background: #88236f;  /* Dark purple background */
+    color: #fff;  /* White text */
+    border: none;  /* Remove default border */
+    border-radius: 10px;  /* Rounded corners */
+    padding: 15px 20px;  /* Add some padding for better appearance */
+    width: 100%;  /* Make the button full width of the form */
+    font-size: 18px;  /* Make text larger for better readability */
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s ease;  /* Add transition for smooth hover effects */
+}
+
+/* Button hover effect */
+#add-cafe-form button:hover {
+    background: #b93b7a;  /* Change background color when hovered */
+    transform: scale(1.05);  /* Slightly enlarge the button */
+}
+
+/* Button focus effect */
+#add-cafe-form button:focus {
+    outline: none;  /* Remove the outline on focus */
+    background: #b93b7a;  /* Keep the light purple on focus */
+}
+
+/* Add responsive design for small screens */
+@media (max-width: 600px) {
+    #add-cafe-form button {
+        width: 100%;  /* Button takes full width on mobile */
+    }
+}
