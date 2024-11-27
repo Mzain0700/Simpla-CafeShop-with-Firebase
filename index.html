@@ -2,75 +2,169 @@
 <html lang="en">
 
 <head>
-    <title>Zain Store</title>
-    <style>
-        * {
-            text-decoration: none;
-        }
-
-        .navbar {
-            background: black;
-            font-family: Calibri;
-            padding-right: 15px;
-            padding-left: 15px;
-        }
-
-        .navdiv {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo a {
-            font-size: 35px;
-            font-weight: 600;
-            color: white
-        }
-
-        .navbar li {
-            list-style: none;
-            display: inline-block;
-
-        }
-
-        .navbar li a {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            margin-right: 25px;
-        }
-
-       .navbar button {
-            background-color: white;
-            margin-left: 10px;
-            border-radius: 10px;
-            padding: 10px;
-            width: 98px;
-        }
-
-       .navbar button a {
-            color:black;
-            font-weight: bold;
-            font-size: 15px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Cafe Shop</title>
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="navdiv">
-            <div class="logo"><a href="#">StoreName</a></div>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">ContactUs</a></li>
-                <button><a href="#">SignIn</a></button>
-                <button><a href="#">SignUp</a></button>
-            </ul>
-        </div>
-    </nav>
-    
+    <h1>Cloud Cafe</h1>
+    <div class="content">
+        <!-- Form to add a new cafe -->
+        <form action="" id="add-cafe-form">
+            <input type="text" name="name" placeholder="Cafe Name" required>
+            <input type="text" name="location" placeholder="Cafe Location" required>
+            <button type="submit">Add Cafe</button>
+        </form>
 
+        <!-- Form to update an existing cafe -->
+        <form action="" id="update-cafe-form" style="display: none;">
+            <input type="text" name="name" placeholder="Updated Cafe Name" required>
+            <input type="text" name="location" placeholder="Updated Location" required>
+            <button type="submit">Update Cafe</button>
+        </form>
+
+        <!-- List of cafes -->
+        <ul id="cafe-list"></ul>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        //Add your Information Here of Firebase
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "",
+            databaseURL: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: "",
+            measurementId: ""
+        };
+       
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Form elements
+        const form = document.querySelector('#add-cafe-form');
+        const updateForm = document.querySelector('#update-cafe-form');
+        const cafelist = document.querySelector('#cafe-list');
+
+        // Function to render cafe data in the list
+        function renderCafe(doc) {
+            let li = document.createElement('li');
+            let name = document.createElement('span');
+            let city = document.createElement('span');
+            let cross = document.createElement('div');
+            let edit = document.createElement('button'); // Edit button
+
+            li.setAttribute('data-id', doc.id);
+            name.textContent = doc.data().name;
+            city.textContent = doc.data().location;
+            cross.textContent = 'x';
+            edit.textContent = 'Edit'; // Button text
+
+            li.appendChild(name);
+            li.appendChild(city);
+            li.appendChild(cross);
+            li.appendChild(edit);
+            cafelist.appendChild(li);
+
+            // Delete cafe
+            cross.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                let id = e.target.parentElement.getAttribute('data-id');
+                try {
+                    const docRef = doc(db, 'cafes', id);
+                    await deleteDoc(docRef);
+                    console.log(`Document with ID: ${id} deleted successfully!`);
+                    cafelist.removeChild(li); // Remove from DOM
+                } catch (error) {
+                    console.error("Error deleting document:", error);
+                }
+            });
+
+            // Edit cafe data
+            edit.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let id = e.target.parentElement.getAttribute('data-id');
+                let nameValue = e.target.parentElement.querySelector('span').textContent;
+                let locationValue = e.target.parentElement.querySelectorAll('span')[1].textContent;
+
+                // Fill the update form with current data
+                updateForm.name.value = nameValue;
+                updateForm.location.value = locationValue;
+                updateForm.setAttribute('data-id', id); // Store doc id in form for later use
+                updateForm.style.display = 'block'; // Show update form
+            });
+        }
+
+        // Real-time listener for data changes
+        const cafesQuery = query(collection(db, 'cafes'), orderBy('location')); // Query sorted by location
+        onSnapshot(cafesQuery, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === 'added') {
+                    renderCafe(change.doc); // Render added cafe
+                } else if (change.type === 'removed') {
+                    let li = cafelist.querySelector('[data-id=' + change.doc.id + ']');
+                    cafelist.removeChild(li); // Remove deleted cafe from DOM
+                }
+            });
+        });
+
+        // Save new cafe data
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await addDoc(collection(db, 'cafes'), {
+                    name: form.name.value,
+                    location: form.location.value,
+                });
+                form.reset(); // Clear the form after submission
+                console.log("Cafe added successfully!");
+            } catch (error) {
+                console.error("Error adding cafe:", error);
+            }
+        });
+
+        // Update cafe data
+        updateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = updateForm.getAttribute('data-id'); // Get the cafe ID
+            const newName = updateForm.name.value;
+            const newLocation = updateForm.location.value;
+
+            try {
+                const cafeRef = doc(db, 'cafes', id); // Reference to the document to update
+                await updateDoc(cafeRef, {
+                    name: newName,
+                    location: newLocation
+                });
+                console.log("Cafe updated successfully!");
+
+                // Optionally, update the DOM directly
+                let li = cafelist.querySelector('[data-id="' + id + '"]');
+                li.querySelector('span').textContent = newName;
+                li.querySelectorAll('span')[1].textContent = newLocation;
+
+                updateForm.reset(); // Clear the update form after submission
+                updateForm.style.display = 'none'; // Hide the update form
+            } catch (error) {
+                console.error("Error updating cafe:", error);
+            }
+        });
+    </script>
+    <script type="module" src="app.js"></script>
 </body>
 
 </html>
